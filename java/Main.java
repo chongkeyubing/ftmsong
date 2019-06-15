@@ -4,11 +4,16 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 public class Main {
+	
+	private static String fileEncode = "utf8";
+	
     private static String songFilePath = "../songs";
 
     private static String totalRecordFilePath = "../每日汇总.txt";
 
-    private static String songsFilePath = "../单曲统计.txt";
+    private static String songsSortedByTimeFilePath = "../单曲统计-时间排序.txt";
+	
+	private static String songsSortedByTimesFilePath = "../单曲统计-次数排序.txt";
 
     private static ArrayList<File> fileList = new ArrayList<>();
 
@@ -24,14 +29,18 @@ public class Main {
         sortTotalRecord();
         calcCountsOfSong();
         calcLastTimeOfSong();
-        sortSongs();
-		//sortSongsByTimes();
-        writeTotalRecordToFile();
-        writeSortedSongsToFile();
+		writeTotalRecordToFile();
+		
+        sortSongsByTime();
+		writeSortedSongsToFile(songsSortedByTimeFilePath);
+		
+		sortSongsByTimes();
+        writeSortedSongsToFile(songsSortedByTimesFilePath);
 		
         System.out.println("输出结果:");
 		System.out.println(new File(totalRecordFilePath).getAbsolutePath());
-		 System.out.println(new File(songsFilePath).getAbsolutePath());
+		System.out.println(new File(songsSortedByTimeFilePath).getAbsolutePath());
+		System.out.println(new File(songsSortedByTimesFilePath).getAbsolutePath());
         System.out.println("------完成-------");
     }
 
@@ -55,7 +64,7 @@ public class Main {
         BufferedReader br = null;
         for(File file : fileList){
             try {
-                isr = new InputStreamReader(new FileInputStream(file), "utf8");
+                isr = new InputStreamReader(new FileInputStream(file), fileEncode);
                 br = new BufferedReader(isr);
 
                 String songName = "";
@@ -130,7 +139,7 @@ public class Main {
         });
     }
 
-    public static void sortSongs(){
+    public static void sortSongsByTime(){
         ArrayList<Map.Entry<String,Song>> list = new ArrayList<Map.Entry<String,Song>>(songs.entrySet());
         Collections.sort(list,(o1,o2)->{
             Song v1 = o1.getValue();
@@ -148,7 +157,6 @@ public class Main {
             }
 			return 0;
         });
-        songs = null;
         sortedSongs = list;
     }
 	
@@ -170,13 +178,12 @@ public class Main {
 			}
 			return 0;
         });
-        songs = null;
         sortedSongs = list;
     }
 
     public static void writeTotalRecordToFile(){
-        try(OutputStreamWriter osw = new OutputStreamWriter(new FileOutputStream(totalRecordFilePath), "utf-8")) {
-            osw.write("序号 | 时间 | 序号 | 歌名\r\n");
+        try(OutputStreamWriter osw = new OutputStreamWriter(new FileOutputStream(totalRecordFilePath), fileEncode)) {
+            osw.write("序号 |   时间    |序号| 歌名\r\n");
 			for(int i =0,size = totalRecord.size(); i < size;i++){
 				Record record = totalRecord.get(i);
 				try {
@@ -192,9 +199,9 @@ public class Main {
         }
     }
 
-    public static void writeSortedSongsToFile(){
+    public static void writeSortedSongsToFile(String path){
 		
-        try(OutputStreamWriter osw = new OutputStreamWriter(new FileOutputStream(songsFilePath), "utf-8")) {
+        try(OutputStreamWriter osw = new OutputStreamWriter(new FileOutputStream(path), fileEncode)) {
             osw.write("序号| 最后一次  |次数 | 歌名 \r\n");
 			for(int i =0,size = sortedSongs.size(); i < size;i++){
 				Song s = sortedSongs.get(i).getValue();
@@ -415,6 +422,18 @@ public class Main {
 		}
 		if(name.equals("即视感")){
 			name = "既视感";
+		}
+		if(name.equals("what you want form me")){
+			name = "what you want from me";
+		}
+		if(name.equals("一个像夏天 一个像秋天")){
+			name = "一个像夏天一个像秋天";
+		}
+		if(name.equals("好的晚安")){
+			name = "好的 晚安";
+		}
+		if(name.equals("狂狼")){
+			name = "狂浪";
 		}
         return  name;
     }
