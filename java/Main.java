@@ -4,11 +4,11 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 public class Main {
-    private static String songFilePath = "..\\songs";
+    private static String songFilePath = "../songs";
 
-    private static String totalRecordFilePath = "..\\songs\\每日汇总.txt";
+    private static String totalRecordFilePath = "../每日汇总.txt";
 
-    private static String songsFilePath = "..\\songs\\单曲统计.txt";
+    private static String songsFilePath = "../单曲统计.txt";
 
     private static ArrayList<File> fileList = new ArrayList<>();
 
